@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:helha/data/repositories/i_user_repo.dart';
 import 'package:helha/data/repositories/shared_preferences_impl.dart';
+import 'package:helha/usecases/i_email_validation.dart';
 
 import 'firebase_oauthStatus.dart';
 import 'i_firebase_auth_user.dart';
 
-class FirebaseAuthUserImpl extends GetxController implements IFirebaseAuthUser {
+class FirebaseAuthUserImpl extends GetxController
+    implements IFirebaseAuthUser, IEmailValidation {
   FireBaseAuthStatus _fireBaseAuthStatus = FireBaseAuthStatus.signout;
   final IUserRepo _userRepo = SharedPreferencesImpl();
   User? _firebaseUser;
@@ -47,21 +49,7 @@ class FirebaseAuthUserImpl extends GetxController implements IFirebaseAuthUser {
         .signInWithEmailAndPassword(
             email: emailId!.trim(), password: password!.trim())
         .catchError((error) {
-      String _message = '오류입니다';
-      switch (error.code) {
-        case 'invalid-email':
-          _message = '유효하지 않은 이메일 입니다';
-          break;
-        case 'user-disabled':
-          _message = '차단된 사용자입니다.';
-          break;
-        case 'user-not-found':
-          _message = '없는 이메일 입니다';
-          break;
-        case 'wrong-password':
-          _message = '비밀번호가 틀렸습니다';
-          break;
-      }
+      String _message = getErrorMessage(error.code);
       Get.defaultDialog(
           // TODO : 확인버튼만들기
           middleText: _message,
@@ -151,5 +139,25 @@ class FirebaseAuthUserImpl extends GetxController implements IFirebaseAuthUser {
   Future<String?> getAccessToken() async {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
     return await _firebaseMessaging.getToken();
+  }
+
+  @override
+  String getErrorMessage(String errorCode) {
+    String _message = '오류입니다';
+    switch (errorCode) {
+      case 'invalid-email':
+        _message = '유효하지 않은 이메일 입니다';
+        break;
+      case 'user-disabled':
+        _message = '차단된 사용자입니다.';
+        break;
+      case 'user-not-found':
+        _message = '없는 이메일 입니다';
+        break;
+      case 'wrong-password':
+        _message = '비밀번호가 틀렸습니다';
+        break;
+    }
+    return _message;
   }
 }
