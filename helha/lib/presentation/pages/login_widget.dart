@@ -47,10 +47,6 @@ class LoginWidget extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: _pwdController,
-                  // decoration: InputDecoration(
-                  //   border: OutlineInputBorder(),
-                  //   labelText: '비밀번호를 넣어주세요',
-                  // ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value!.isNotEmpty && value.length >= 6) {
