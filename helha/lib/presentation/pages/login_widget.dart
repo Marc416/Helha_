@@ -68,9 +68,12 @@ class LoginWidget extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () async {
                       _loginController.signOut();
+                      Get.defaultDialog(middleText: '로그인 시도 중입니다.');
                       String response = await _loginController.emailLogin(
                           emailId: _emailIdController.text,
                           password: _pwdController.text);
+                      Get.back();
+                      alertOneConfirmDialog(response);
                     },
                     child: Text('로그인')),
                 ElevatedButton(
@@ -89,7 +92,10 @@ class LoginWidget extends StatelessWidget {
 
 void alertOneConfirmDialog(String _message) {
   Get.defaultDialog(
-      // TODO : 확인버튼만들기
       middleText: _message,
-      confirm: Text('확인'));
+      confirm: OutlinedButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: const Text('확인')));
 }
