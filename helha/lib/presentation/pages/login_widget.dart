@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:helha/const/debug_variables.dart';
 import 'package:helha/usecases/firebase_auth_user_impl.dart';
 
 import '../Widgets/oauth_validate_widget.dart';
@@ -11,6 +12,11 @@ class LoginWidget extends StatelessWidget {
   final TextEditingController _pwdController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    if (isDebug == true) {
+      _emailIdController.text = debugId;
+      _pwdController.text = debugPwd;
+    }
+
     return Builder(
       builder: (context) => Scaffold(
         body: SafeArea(
