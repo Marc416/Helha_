@@ -1,3 +1,4 @@
 abstract class IEmailValidation {
-  String getErrorMessage(String errorCode);
+  String getEmailErrorMessage(String errorCode);
+  Future<String> isEmailVerrified(bool email);
 }

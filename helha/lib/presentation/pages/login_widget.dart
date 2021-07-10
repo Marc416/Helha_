@@ -66,9 +66,9 @@ class LoginWidget extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       _loginController.signOut();
-                      _loginController.emailLogin(
+                      String response = await _loginController.emailLogin(
                           emailId: _emailIdController.text,
                           password: _pwdController.text);
                     },
@@ -85,4 +85,11 @@ class LoginWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+void alertOneConfirmDialog(String _message) {
+  Get.defaultDialog(
+      // TODO : 확인버튼만들기
+      middleText: _message,
+      confirm: Text('확인'));
 }

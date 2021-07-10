@@ -40,36 +40,28 @@ class FirebaseAuthUserImpl extends GetxController
   }
 
   @override
-  void emailLogin(
-      {@required String? emailId,
-      @required String? password,
-      BuildContext? context}) async {
+  Future<String> emailLogin({
+    @required String? emailId,
+    @required String? password,
+  }) async {
     Get.defaultDialog(middleText: '로그인 시도 중입니다.');
+    String _message = '';
     UserCredential authResult = await _firebaseAuth
         .signInWithEmailAndPassword(
             email: emailId!.trim(), password: password!.trim())
         .catchError((error) {
-      String _message = getErrorMessage(error.code);
-      Get.defaultDialog(
-          // TODO : 확인버튼만들기
-          middleText: _message,
-          confirm: Text('확인'));
+      _message = getEmailErrorMessage(error.code);
     });
+    if (_message != '') return _message;
+
+    // If User is null -> return error message
     _firebaseUser = authResult.user;
+    final userNull = isUserNull(_firebaseUser);
+    if (userNull != '') return userNull;
+
     watchUserAuthChange();
     changeFireBaseAuthStatus();
-    if (_firebaseUser!.emailVerified == false) {
-      await _firebaseUser?.sendEmailVerification();
-      Get.back();
-      Get.defaultDialog(middleText: "이메일 인증을 한뒤 다시 로그인 해주세요.");
-    } else {
-      Get.back();
-      Get.defaultDialog(middleText: "로그인 완료되었습니다.");
-    }
-    if (_firebaseUser == null) {
-      Get.back();
-      Get.defaultDialog(middleText: '오류가 떴으니 나중에 다시해주세요.');
-    }
+    return await isEmailVerrified(_firebaseUser!.emailVerified);
   }
 
   @override
@@ -142,7 +134,7 @@ class FirebaseAuthUserImpl extends GetxController
   }
 
   @override
-  String getErrorMessage(String errorCode) {
+  String getEmailErrorMessage(String errorCode) {
     String _message = '오류입니다';
     switch (errorCode) {
       case 'invalid-email':
@@ -159,5 +151,22 @@ class FirebaseAuthUserImpl extends GetxController
         break;
     }
     return _message;
+  }
+
+  @override
+  Future<String> isEmailVerrified(bool emailVerified) async {
+    if (emailVerified == false) {
+      await _firebaseUser?.sendEmailVerification();
+      return "이메일 인증을 한뒤 다시 로그인 해주세요.";
+    } else {
+      return "로그인 완료되었습니다.";
+    }
+  }
+
+  String isUserNull(User? _firebaseUser) {
+    if (_firebaseUser == null) {
+      return '오류가 떴으니 나중에 다시해주세요.';
+    }
+    return '';
   }
 }
