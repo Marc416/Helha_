@@ -44,14 +44,13 @@ class FirebaseAuthUserImpl extends GetxController
     @required String? emailId,
     @required String? password,
   }) async {
-    String emailErrorMessage = '';
-    UserCredential authResult = await _firebaseAuth
-        .signInWithEmailAndPassword(
-            email: emailId!.trim(), password: password!.trim())
-        .catchError((error) {
-      emailErrorMessage = getEmailErrorMessage(error.code);
-    });
-    if (emailErrorMessage != '') return emailErrorMessage;
+    UserCredential? authResult;
+    try {
+      authResult = await _firebaseAuth.signInWithEmailAndPassword(
+          email: emailId!.trim(), password: password!.trim());
+    } on FirebaseAuthException catch (e) {
+      return getEmailErrorMessage(e.code);
+    }
 
     // If User is null -> return error message
     _firebaseUser = authResult.user;
