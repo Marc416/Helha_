@@ -79,7 +79,6 @@ class LoginWidget extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       Get.offAll(SignUp());
-                      print('test github owner');
                     },
                     child: Text('가입하기')),
               ],
