@@ -68,7 +68,7 @@ class FirebaseAuthUserImpl extends GetxController
       @required String? password,
       BuildContext? context}) async {
     changeFireBaseAuthStatus(FireBaseAuthStatus.progress);
-    UserCredential authResult = await _firebaseAuth
+    await _firebaseAuth
         .createUserWithEmailAndPassword(
             email: emailId!.trim(), password: password!.trim())
         .catchError(
