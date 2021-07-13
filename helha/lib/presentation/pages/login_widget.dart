@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:helha/const/debug_variables.dart';
 import 'package:helha/usecases/firebase_auth_user_impl.dart';
+import 'package:helha/usecases/i_firebase_auth_user.dart';
 
 import '../Widgets/oauth_validate_widget.dart';
 import 'sign_up_widget.dart';
 
 class LoginWidget extends StatelessWidget {
-  final _loginController = Get.put(FirebaseAuthUserImpl());
+  final IFirebaseAuthUser _authUser = Get.put(FirebaseAuthUserImpl());
   final TextEditingController _emailIdController = TextEditingController();
   final TextEditingController _pwdController = TextEditingController();
   @override
@@ -70,9 +71,9 @@ class LoginWidget extends StatelessWidget {
                 ),
                 ElevatedButton(
                     onPressed: () async {
-                      _loginController.signOut();
+                      _authUser.signOut();
                       Get.defaultDialog(middleText: '로그인 시도 중입니다.');
-                      String response = await _loginController.emailLogin(
+                      String response = await _authUser.emailLogin(
                           emailId: _emailIdController.text,
                           password: _pwdController.text);
                       Get.back();
