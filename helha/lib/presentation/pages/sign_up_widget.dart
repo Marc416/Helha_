@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:helha/get_dependencies.dart';
 import 'package:helha/presentation/widgets/oauth_validate_widget.dart';
 import 'package:helha/usecases/firebase_auth_user_impl.dart';
 
 import 'login_widget.dart';
 
 class SignUp extends StatelessWidget {
-  final _loginController = Get.put(FirebaseAuthUserImpl());
+  final _authUser = Get.find<GetDependencies>().authUser;
   TextEditingController _emailIdController = TextEditingController();
   TextEditingController _pwdController = TextEditingController();
   TextEditingController _confirmpwdController = TextEditingController();
@@ -91,7 +92,7 @@ class SignUp extends StatelessWidget {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      _loginController.registerUser(
+                      _authUser.registerUser(
                           emailId: _emailIdController.text,
                           password: _pwdController.text);
                     },

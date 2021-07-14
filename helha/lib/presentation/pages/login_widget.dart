@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:helha/const/debug_variables.dart';
+import 'package:helha/get_dependencies.dart';
 import 'package:helha/usecases/firebase_auth_user_impl.dart';
 import 'package:helha/usecases/i_firebase_auth_user.dart';
 
@@ -8,7 +9,7 @@ import '../Widgets/oauth_validate_widget.dart';
 import 'sign_up_widget.dart';
 
 class LoginWidget extends StatelessWidget {
-  final IFirebaseAuthUser _authUser = Get.put(FirebaseAuthUserImpl());
+  final IFirebaseAuthUser _authUser = Get.find<GetDependencies>().authUser;
   final TextEditingController _emailIdController = TextEditingController();
   final TextEditingController _pwdController = TextEditingController();
   @override
