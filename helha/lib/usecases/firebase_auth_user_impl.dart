@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:helha/data/repositories/i_user_repo.dart';
 import 'package:helha/data/repositories/shared_preferences_impl.dart';
+import 'package:helha/get_dependencies.dart';
 import 'package:helha/usecases/i_email_validation.dart';
 
 import 'firebase_oauthStatus.dart';
@@ -12,7 +13,9 @@ import 'i_firebase_auth_user.dart';
 class FirebaseAuthUserImpl extends GetxController
     implements IFirebaseAuthUser, IEmailValidation {
   FireBaseAuthStatus _fireBaseAuthStatus = FireBaseAuthStatus.signout;
-  final IUserRepo _userRepo = SharedPreferencesImpl();
+  // 클래스명을 바꿨을 때 빨간 줄이 뜨면 의존을 하고 있다는 것.
+  // 이걸 해결하기 위해서는 의존성 주입을 받아야 한다. 의존성 주입을 통해서 의존성 역전을 해야한다.
+  final IUserRepo _userRepo = Get.find<GetDependencies>().sharedPreferences;
   User? _firebaseUser;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
