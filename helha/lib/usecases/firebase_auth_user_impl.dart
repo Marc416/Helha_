@@ -29,6 +29,8 @@ class FirebaseAuthUserImpl extends GetxController
         changeFireBaseAuthStatus();
       } else if (_firebaseUser != firebaseUser) {
         _firebaseUser = firebaseUser;
+
+        // Save Token
         _userRepo.saveAccessToken(await getAccessToken());
         changeFireBaseAuthStatus();
       }
