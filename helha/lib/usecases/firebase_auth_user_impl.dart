@@ -3,7 +3,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:helha/data/repositories/i_user_repo.dart';
-import 'package:helha/data/repositories/shared_preferences_impl.dart';
 import 'package:helha/get_dependencies.dart';
 import 'package:helha/usecases/i_email_validation.dart';
 
@@ -13,23 +12,17 @@ import 'i_firebase_auth_user.dart';
 class FirebaseAuthUserImpl extends GetxController
     implements IFirebaseAuthUser, IEmailValidation {
   FireBaseAuthStatus _fireBaseAuthStatus = FireBaseAuthStatus.signout;
-  // 클래스명을 바꿨을 때 빨간 줄이 뜨면 의존을 하고 있다는 것.
-  // 이걸 해결하기 위해서는 의존성 주입을 받아야 한다. 의존성 주입을 통해서 의존성 역전을 해야한다.
   final IUserRepo _userRepo = Get.find<GetDependencies>().sharedPreferences;
   User? _firebaseUser;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  @override
   FireBaseAuthStatus get fireBaseAuthStatus => _fireBaseAuthStatus;
-  FirebaseAuth get fireBaseAuth => _firebaseAuth;
 
-  @override
   set fireBaseAuthStatus(FireBaseAuthStatus status) {
     _fireBaseAuthStatus = status;
     update();
   }
 
-  @override
   void watchUserAuthChange() {
     _firebaseAuth.authStateChanges().listen((firebaseUser) async {
       if (_firebaseUser == null && firebaseUser == null) {
@@ -110,7 +103,6 @@ class FirebaseAuthUserImpl extends GetxController
     update();
   }
 
-  @override
   void changeFireBaseAuthStatus([FireBaseAuthStatus? firebaseAuthStatus]) {
     if (firebaseAuthStatus != null) {
       //매개변수로 받은 변수에 status변수가 null이아니면 private변수인 status변수를 바꿔준다.
@@ -128,7 +120,6 @@ class FirebaseAuthUserImpl extends GetxController
     update();
   }
 
-  @override
   Future<String?> getAccessToken() async {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
     return await _firebaseMessaging.getToken();
