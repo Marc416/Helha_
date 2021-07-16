@@ -61,10 +61,10 @@ class FirebaseAuthUserImpl extends GetxController
   }
 
   @override
-  void registerUser(
-      {@required String? emailId,
-      @required String? password,
-      BuildContext? context}) async {
+  void registerUser({
+    @required String? emailId,
+    @required String? password,
+  }) async {
     changeFireBaseAuthStatus(FireBaseAuthStatus.progress);
     await _firebaseAuth
         .createUserWithEmailAndPassword(
