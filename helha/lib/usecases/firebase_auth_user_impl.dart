@@ -26,13 +26,13 @@ class FirebaseAuthUserImpl extends GetxController
   void watchUserAuthChange() {
     _firebaseAuth.authStateChanges().listen((firebaseUser) async {
       if (_firebaseUser == null && firebaseUser == null) {
-        changeFireBaseAuthStatus();
+        detectFireBaseAuthStatus();
       } else if (_firebaseUser != firebaseUser) {
         _firebaseUser = firebaseUser;
 
         // Save Token
         _userRepo.saveAccessToken(await getAccessToken());
-        changeFireBaseAuthStatus();
+        detectFireBaseAuthStatus();
       }
     });
   }
@@ -56,7 +56,6 @@ class FirebaseAuthUserImpl extends GetxController
     if (userNull != '') return userNull;
 
     watchUserAuthChange();
-    changeFireBaseAuthStatus();
     return await isEmailVerrified(_firebaseUser!.emailVerified);
   }
 
@@ -65,7 +64,7 @@ class FirebaseAuthUserImpl extends GetxController
     @required String? emailId,
     @required String? password,
   }) async {
-    changeFireBaseAuthStatus(FireBaseAuthStatus.progress);
+    changeFireBaseAuth(FireBaseAuthStatus.progress);
     await _firebaseAuth
         .createUserWithEmailAndPassword(
             email: emailId!.trim(), password: password!.trim())
@@ -105,20 +104,17 @@ class FirebaseAuthUserImpl extends GetxController
     update();
   }
 
-  void changeFireBaseAuthStatus([FireBaseAuthStatus? firebaseAuthStatus]) {
-    if (firebaseAuthStatus != null) {
-      //매개변수로 받은 변수에 status변수가 null이아니면 private변수인 status변수를 바꿔준다.
-      _fireBaseAuthStatus = firebaseAuthStatus;
+  void changeFireBaseAuth(FireBaseAuthStatus firebaseAuthStatus) {
+    _fireBaseAuthStatus = firebaseAuthStatus;
+    update();
+  }
+
+  void detectFireBaseAuthStatus() {
+    if (_firebaseUser != null) {
+      _fireBaseAuthStatus = FireBaseAuthStatus.signin;
     } else {
-      if (_firebaseUser != null) {
-        //유저의 데이터가 있다면 로그인된상태이므로 status를 로그인으로 바꿔주
-        _fireBaseAuthStatus = FireBaseAuthStatus.signin;
-      } else {
-        ///유저정보를 받지 못했을 경우 또는 없는 경우
-        _fireBaseAuthStatus = FireBaseAuthStatus.signout;
-      }
+      _fireBaseAuthStatus = FireBaseAuthStatus.signout;
     }
-    //상태변화됐으니까 프로바이더들에게 상태변화된 것을 알려주기.
     update();
   }
 
