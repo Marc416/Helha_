@@ -8,12 +8,11 @@ import 'login_widget.dart';
 
 class SignUp extends StatelessWidget {
   final IFirebaseAuthUser _authUser = Get.find<GetDependencies>().authUser;
-  TextEditingController _emailIdController = TextEditingController();
-  TextEditingController _pwdController = TextEditingController();
-  TextEditingController _confirmpwdController = TextEditingController();
+  final TextEditingController _emailIdController = TextEditingController();
+  final TextEditingController _pwdController = TextEditingController();
+  final TextEditingController _confirmpwdController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Builder(
       builder: (context) => Scaffold(
         body: SafeArea(
