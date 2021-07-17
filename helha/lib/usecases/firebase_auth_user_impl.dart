@@ -8,9 +8,10 @@ import 'package:helha/usecases/i_email_validation.dart';
 
 import 'firebase_oauthStatus.dart';
 import 'i_firebase_auth_user.dart';
+import 'i_sign_in_validation.dart';
 
 class FirebaseAuthUserImpl extends GetxController
-    implements IFirebaseAuthUser, IEmailValidation {
+    implements IFirebaseAuthUser, IEmailValidation, ISignInValidation {
   FireBaseAuthStatus _fireBaseAuthStatus = FireBaseAuthStatus.signout;
   final IUserRepo _userRepo = Get.find<GetDependencies>().sharedPreferences;
   User? _firebaseUser;
@@ -60,38 +61,27 @@ class FirebaseAuthUserImpl extends GetxController
   }
 
   @override
-  void registerUser({
+  Future<String> registerUser({
     @required String? emailId,
     @required String? password,
   }) async {
     changeFireBaseAuth(FireBaseAuthStatus.progress);
-    await _firebaseAuth
-        .createUserWithEmailAndPassword(
-            email: emailId!.trim(), password: password!.trim())
-        .catchError(
-      (error) {
-        //에러캐치해서 스낵바 실행시키기
-        String _message = '알수없는 오류입니';
-        print(error.code);
-        switch (error.code) {
-          case 'email-already-in-use':
-            print('사용중');
-            _message = '해당 아이디는 이미 사용중입니다';
-            break;
-          case 'invalid-email':
-            _message = '이메일 형식이 아닙니다';
-            break;
-          case 'operation-not-allowed':
-            _message = '아이디나 비밀번호가 일치하지않습니다';
-            break;
-        }
-        Get.defaultDialog(middleText: _message);
-      },
-    );
-    await _firebaseUser?.sendEmailVerification();
-    Get.defaultDialog(middleText: '이메일 인증을 한 뒤 로그인 해 주세요.');
+
+    UserCredential? authResult;
+    try {
+      authResult = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: emailId!.trim(), password: password!.trim());
+    } on FirebaseAuthException catch (e) {
+      return getSignInErrorMessage(e.code);
+    }
+
+    _firebaseUser = authResult.user;
+    final userErrorCheck = isUserNull(_firebaseUser);
+    if (userErrorCheck.isNotEmpty) return userErrorCheck;
+
     watchUserAuthChange();
-    update();
+    await _firebaseUser?.sendEmailVerification();
+    return '이메일 인증을 한 뒤 로그인 해 주세요.';
   }
 
   @override
@@ -158,5 +148,22 @@ class FirebaseAuthUserImpl extends GetxController
       return '오류가 떴으니 나중에 다시해주세요.';
     }
     return '';
+  }
+
+  @override
+  String getSignInErrorMessage(String errorCode) {
+    String _message = '알수없는 오류입니';
+    switch (errorCode) {
+      case 'email-already-in-use':
+        _message = '해당 아이디는 이미 사용중입니다';
+        break;
+      case 'invalid-email':
+        _message = '이메일 형식이 아닙니다';
+        break;
+      case 'operation-not-allowed':
+        _message = '아이디나 비밀번호가 일치하지않습니다';
+        break;
+    }
+    return _message;
   }
 }

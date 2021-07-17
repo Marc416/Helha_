@@ -3,7 +3,7 @@ abstract class IFirebaseAuthUser {
     String? emailId,
     String? password,
   });
-  void registerUser({
+  Future<String> registerUser({
     String? emailId,
     String? password,
   });

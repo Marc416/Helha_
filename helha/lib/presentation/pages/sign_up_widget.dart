@@ -86,10 +86,12 @@ class SignUp extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton(
-                    onPressed: () {
-                      _authUser.registerUser(
+                    onPressed: () async {
+                      String response = await _authUser.registerUser(
                           emailId: _emailIdController.text,
                           password: _pwdController.text);
+                      Get.back();
+                      alertOneConfirmDialog(response);
                     },
                     child: Text('가입하기')),
                 ElevatedButton(
