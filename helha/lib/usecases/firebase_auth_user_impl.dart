@@ -5,13 +5,18 @@ import 'package:get/get.dart';
 import 'package:helha/data/repositories/i_user_repo.dart';
 import 'package:helha/get_dependencies.dart';
 import 'package:helha/usecases/i_email_validation.dart';
+import 'package:helha/usecases/i_firebase_email_signup.dart';
 
 import 'firebase_oauthStatus.dart';
-import 'i_firebase_auth_user.dart';
+import 'i_firebase_email_signin.dart';
 import 'i_sign_in_validation.dart';
 
 class FirebaseAuthUserImpl extends GetxController
-    implements IFirebaseAuthUser, IEmailValidation, ISignInValidation {
+    implements
+        IFirebaseEmailSignIn,
+        IEmailValidation,
+        ISignInValidation,
+        IFirebaseEmailSignUp {
   FireBaseAuthStatus _fireBaseAuthStatus = FireBaseAuthStatus.signout;
   final IUserRepo _userRepo = Get.find<GetDependencies>().sharedPreferences;
   User? _firebaseUser;

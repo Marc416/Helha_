@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:helha/get_dependencies.dart';
 import 'package:helha/presentation/widgets/oauth_validate_widget.dart';
-import 'package:helha/usecases/i_firebase_auth_user.dart';
+import 'package:helha/usecases/i_firebase_email_signup.dart';
 
 import 'login_widget.dart';
 
 class SignUp extends StatelessWidget {
-  final IFirebaseAuthUser _authUser = Get.find<GetDependencies>().authUser;
+  final IFirebaseEmailSignUp _authUser = Get.find<GetDependencies>().authUser;
   final TextEditingController _emailIdController = TextEditingController();
   final TextEditingController _pwdController = TextEditingController();
   final TextEditingController _confirmpwdController = TextEditingController();
