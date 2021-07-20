@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:helha/get_dependencies.dart';
 import 'package:helha/presentation/widgets/oauth_validate_widget.dart';
-import 'package:helha/usecases/firebase_auth_user_impl.dart';
+import 'package:helha/usecases/i_firebase_email_signup.dart';
 
 import 'login_widget.dart';
 
 class SignUp extends StatelessWidget {
-  final _loginController = Get.put(FirebaseAuthUserImpl());
-  TextEditingController _emailIdController = TextEditingController();
-  TextEditingController _pwdController = TextEditingController();
-  TextEditingController _confirmpwdController = TextEditingController();
+  final IFirebaseEmailSignUp _authUser = Get.find<GetDependencies>().authUser;
+  final TextEditingController _emailIdController = TextEditingController();
+  final TextEditingController _pwdController = TextEditingController();
+  final TextEditingController _confirmpwdController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Builder(
       builder: (context) => Scaffold(
         body: SafeArea(
@@ -71,10 +71,6 @@ class SignUp extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: _confirmpwdController,
-                  // decoration: InputDecoration(
-                  //   border: OutlineInputBorder(),
-                  //   labelText: '비밀번호를 넣어주세요',
-                  // ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value!.isNotEmpty && value.length >= 6) {
@@ -90,10 +86,12 @@ class SignUp extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton(
-                    onPressed: () {
-                      _loginController.registerUser(
+                    onPressed: () async {
+                      String response = await _authUser.registerUser(
                           emailId: _emailIdController.text,
                           password: _pwdController.text);
+                      Get.back();
+                      alertOneConfirmDialog(response);
                     },
                     child: Text('가입하기')),
                 ElevatedButton(
